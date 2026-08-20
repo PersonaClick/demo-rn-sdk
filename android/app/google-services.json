@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "909532417510",
+    "project_id": "personaclick-29c0d",
+    "storage_bucket": "personaclick-29c0d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:909532417510:android:b5934a9aa76bb96abd9a27",
+        "android_client_info": {
+          "package_name": "com.personaclick.demo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-Wz2hqIS3iwhPQ1V8R-K1s43YplyRpwI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:909532417510:android:9a874b93dfef723abd9a27",
+        "android_client_info": {
+          "package_name": "personaClick.demo_shop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-Wz2hqIS3iwhPQ1V8R-K1s43YplyRpwI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
