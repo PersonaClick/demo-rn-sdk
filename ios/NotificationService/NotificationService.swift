@@ -24,6 +24,7 @@ final class NotificationService: UNNotificationServiceExtension {
       return
     }
     bestAttempt = content
+    Self.markAsFirebaseMessage(content)
 
     guard let url = Self.imageURL(in: content.userInfo) else {
       contentHandler(content)
@@ -44,6 +45,28 @@ final class NotificationService: UNNotificationServiceExtension {
     if let contentHandler, let bestAttempt {
       contentHandler(bestAttempt)
     }
+  }
+
+  /// Lets a push sent straight to APNs reach JavaScript.
+  ///
+  /// React Native Firebase decides whether a notification is one of its own by looking for
+  /// `gcm.message_id`, and silently drops every notification without it — see
+  /// `RNFBMessaging+UNUserNotificationCenter.m`. A push delivered over APNs carries no such key, so
+  /// taps on it reach no handler at all and nothing is tracked, however correct the JavaScript is.
+  ///
+  /// Copying the push's own id into that key is enough to let it through; nothing else in the
+  /// payload changes. The extension is the only place this can happen, because it is the last code
+  /// that runs before the notification is delivered.
+  ///
+  /// Note that only payloads marked `mutable-content: 1` reach this extension. A push without that
+  /// flag is still delivered and displayed — it just stays invisible to JavaScript, and its taps go
+  /// unreported.
+  private static func markAsFirebaseMessage(_ content: UNMutableNotificationContent) {
+    guard content.userInfo["gcm.message_id"] == nil else { return }
+
+    var userInfo = content.userInfo
+    userInfo["gcm.message_id"] = content.userInfo["id"] as? String ?? UUID().uuidString
+    content.userInfo = userInfo
   }
 
   private static func imageURL(in userInfo: [AnyHashable: Any]) -> URL? {

@@ -1,5 +1,6 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Platform } from 'react-native'
+import { getRegisteredPushToken } from '../pushToken'
 import { sdk } from '../sdk'
 import { logEvent } from '../lib/eventLog'
 import { Button, Field, LogPanel, Screen, Section } from '../components/ui'
@@ -15,10 +16,34 @@ export function PushScreen() {
   const [subscribed, setSubscribed] = useState(false)
   const [busy, setBusy] = useState(false)
 
+  /**
+   * The token is fetched on mount, not only on a button press: with autoSendPushToken the SDK
+   * already has it by then, and the whole point of this screen is that nothing has to be called
+   * by hand. The button below stays for a repeat lookup after permission changes.
+   */
+  useEffect(() => {
+    let cancelled = false
+
+    getRegisteredPushToken()
+      .then((value) => {
+        if (cancelled) return
+        setToken(value ?? '')
+        logEvent(
+          value ? 'Token received automatically' : 'Token unavailable',
+          value ?? 'Check the notification permission and your Firebase configuration',
+        )
+      })
+      .catch(() => {})
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   const showToken = useCallback(async () => {
     setBusy(true)
     try {
-      const value = await sdk.getToken()
+      const value = await getRegisteredPushToken()
       setToken(value ?? '')
       logEvent(
         value ? 'Token received' : 'Token unavailable',

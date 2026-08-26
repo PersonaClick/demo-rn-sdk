@@ -7,6 +7,7 @@ import App from './App'
 import { name as appName } from './app.json'
 import { registerBackgroundPushHandlers } from './src/backgroundPush'
 import { registerClickTracking } from './src/clickTracking'
+import { registerPushToken } from './src/pushToken'
 import { sdk } from './src/sdk'
 
 // Start the SDK session here, at launch.
@@ -27,5 +28,9 @@ registerBackgroundPushHandlers()
 // Clicks on notifications the app rendered itself would otherwise go unreported — see
 // src/clickTracking.ts.
 registerClickTracking()
+
+// iOS only: keeps the APNs token — the one PersonaClick delivers to — registered, instead of the
+// FCM token Firebase produces alongside it. See src/pushToken.ts.
+registerPushToken()
 
 AppRegistry.registerComponent(appName, () => App)
