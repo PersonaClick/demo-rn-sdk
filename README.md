@@ -101,17 +101,49 @@ What the demo already carries:
   and it attaches the picture. It reads `image`, `image_url`, `attachment-url` and
   `fcm_options.image`, and it only runs for payloads marked `mutable-content: 1`.
 
+Two things exist purely to keep the **APNs** token registered, and both are easy to break:
+
+- `firebase.json` sets `messaging_ios_auto_register_for_remote_messages` to `true`. iOS hands an
+  APNs token only to an app that called `registerForRemoteNotifications` during the current launch,
+  and the SDK calls it only while it has no token cached. With the flag off, the token arrives on
+  the first launch and is `null` on every launch after that.
+- [`src/pushToken.ts`](src/pushToken.ts) puts the APNs token back after Firebase replaces it.
+  Firebase mints an FCM token of its own as soon as it sees the APNs token, and the SDK forwards
+  every refreshed token to the backend without checking which platform it belongs to — so within a
+  second of launch the shop holds an FCM token labelled `platform: ios`, which is the one thing
+  APNs cannot deliver to. The module re-registers the APNs token, and does it again on every
+  refresh. Delete it once the SDK tells the two apart (the native iOS SDK already does: it sends
+  `ios_firebase` for Firebase tokens).
+
+`GoogleService-Info.plist` is required on iOS even though nothing is delivered through Firebase:
+the SDK reads the APNs token through the Firebase messaging module, so Firebase has to be
+configured for the token to exist at all.
+
 What is still on you, because neither can live in a repository:
 
-1. An Apple Developer account: sign both targets and enable the **Push Notifications** capability
-   on the app target. Without a provisioning profile carrying `aps-environment`, iOS refuses to
-   register for remote messages and the token stays empty.
-2. Upload your APNs key in the PersonaClick dashboard (the FCM key for Android goes to the same
-   place). Without it nothing is delivered, however correct the app is.
+1. An Apple Developer account: replace `DEVELOPMENT_TEAM` in the Xcode project with your own team
+   (it is committed here as the PersonaClick one, and both the app and the extension carry it), and
+   enable the **Push Notifications** capability on the app target. Without a provisioning profile
+   carrying `aps-environment`, iOS refuses to register for remote messages and the token stays
+   empty.
+2. An APNs key (`.p8`, from Certificates, Identifiers & Profiles → Keys), uploaded in the
+   PersonaClick dashboard. Without it nothing is delivered, however correct the app is.
 
-Note that on iOS the SDK registers an **APNs** token by default — PersonaClick sends to APNs
-directly, and Firebase is only used for the Android transport. Calling `firebase_only(true)` before
-`initPush` switches iOS to an FCM token instead.
+So on iOS the SDK registers an **APNs** token and PersonaClick pushes to APNs directly; Firebase
+serves the Android transport only.
+
+That has one consequence worth knowing about, because it is invisible until tracking silently stops
+working. React Native Firebase decides whether a notification is one of its own by looking for
+`gcm.message_id` and drops everything else before any JavaScript handler runs — and a push sent
+straight to APNs has no such key. Delivery and the image are unaffected (iOS renders the
+notification and the extension attaches the picture), but nothing reaches the SDK, so opens and
+clicks go unreported.
+
+The extension closes that gap: it copies the push's own id into `gcm.message_id` before the
+notification is delivered, which is the last moment anything can touch the payload. From there on
+iOS behaves like Android — `track/delivered`, `track/opened` and `track/clicked` all fire. Only
+payloads marked `mutable-content: 1` pass through the extension, so a push without that flag is
+still shown but stays untracked.
 
 ## Expo
 
@@ -129,6 +161,7 @@ src/
 ├── sdk.ts                 SDK instance
 ├── backgroundPush.ts      background and killed-state handlers, registered at module scope
 ├── clickTracking.ts       reports clicks the SDK would otherwise drop
+├── pushToken.ts           iOS only: keeps the APNs token registered, not Firebase's
 ├── pushPresentation.ts    notification rendering, matching the SDK's own
 ├── lib/eventLog.ts        log for the demo screens, unrelated to the SDK
 ├── types/sdk.ts           temporary type shim
