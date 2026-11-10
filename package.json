@@ -7,18 +7,22 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
+    "start:shop": "DEMO_ENTRY=shop react-native start",
+    "android:shop:release": "cd android && ./gradlew assembleRelease -PdemoShop",
+    "ios:shop:release": "ENTRY_FILE=index.shop.js react-native run-ios --mode Release",
     "tsc": "tsc --noEmit"
   },
   "dependencies": {
     "@notifee/react-native": "^9.1.8",
-    "@personaclick/rn-sdk": "4.0.18",
+    "@personaclick/rn-sdk": "4.0.24",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-native-clipboard/clipboard": "^1.16.0",
     "@react-native-firebase/app": "^24.0.0",
     "@react-native-firebase/messaging": "^24.0.0",
     "react": "19.1.0",
     "react-native": "0.81.0",
-    "react-native-safe-area-context": "^5.5.2"
+    "react-native-safe-area-context": "^5.5.2",
+    "react-native-svg": "~15.15.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

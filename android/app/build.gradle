@@ -44,6 +44,10 @@ react {
     //
     //   The entry file for bundle generation. Default is 'index.android.js' or 'index.js'
     // entryFile = file("../js/MyApplication.android.js")
+    //   `-PdemoShop`: the demo shop (index.shop.js), e.g. `./gradlew assembleRelease -PdemoShop`.
+    if (project.hasProperty("demoShop")) {
+        entryFile = file("../../index.shop.js")
+    }
     //
     //   A list of extra flags to pass to the 'bundle' commands.
     //   See https://github.com/react-native-community/cli/blob/main/docs/commands.md#bundle
