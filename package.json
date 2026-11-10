@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@notifee/react-native": "^9.1.8",
-    "@personaclick/rn-sdk": "4.0.24",
+    "@personaclick/rn-sdk": "4.0.25",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-native-clipboard/clipboard": "^1.16.0",
     "@react-native-firebase/app": "^24.0.0",

@@ -1784,10 +1784,10 @@
   resolved "https://registry.yarnpkg.com/@notifee/react-native/-/react-native-9.1.8.tgz#3d55cb3fbcc21f9e35931e366afdf64b294da891"
   integrity sha512-Az/dueoPerJsbbjRxu8a558wKY+gONUrfoy3Hs++5OqbeMsR0dYe6P+4oN6twrLFyzAhEA1tEoZRvQTFDRmvQg==
 
-"@personaclick/rn-sdk@4.0.24":
-  version "4.0.24"
-  resolved "https://registry.yarnpkg.com/@personaclick/rn-sdk/-/rn-sdk-4.0.24.tgz#d986a05dbf1cefacccf4f961a4baf025f4f6b639"
-  integrity sha512-MZqAilyqFBN/1a2fHhJYMXC7gtQv3vICn/UVY0R1mBEDDo3wAzhteKR4sPxqN2+FMYMmVKCAyXt/IkFpAWrnAg==
+"@personaclick/rn-sdk@4.0.25":
+  version "4.0.25"
+  resolved "https://registry.yarnpkg.com/@personaclick/rn-sdk/-/rn-sdk-4.0.25.tgz#ccfadd1515fff804d323b1b4774a9f7b0bd28af3"
+  integrity sha512-RymFpDXGYvrhgPv1h2fz3W2sMa/aqi/Nh8vGG30J030upu03PmnSx7UpTy1FiuTTSurkpnMmG3+M8TwOxCcsaw==
   dependencies:
     axios "^0.34.0"
 
